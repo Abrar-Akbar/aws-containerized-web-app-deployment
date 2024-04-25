@@ -16,3 +16,4 @@ ECS (Elastic Container Service)- Used to easily deploy, manage and scale docker 
 # Step2:
  We need to push our code to a repository for which code commit will be used. After creating git repository, it provides different way of connection such as HTTPS, SSH, HTTPS(GRC). We will be using HTTPS option to clone the repository so that we can push code to CodeCommit.
 
+![image](https://github.com/Abrar-Akbar/aws-containerized-web-app-deployment/assets/62903208/cbf04ef5-3174-4682-a861-0d36bb7c10ef)
