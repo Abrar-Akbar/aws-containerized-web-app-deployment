@@ -1,43 +1,69 @@
-# aws-containerized-web-app-deployment
-# Prerequisites (Purpose of using the AWS services in this project)
-CodeCommit- It is a version control service( Same as GitHub), which will be used to store code, documents, etc.
-CodeBuild- It is used to compile source code, run unit tests, and produce artifacts (S3).
-CodePipeline- Used to quickly model and configure the different stages of the software release process and automate the software change continuously to deploy on testing and production.
-IAM roles- Used to access AWS different resources to complete the task.
-ECR (Elastic Container Registry)- Used to store, and manage local docker images to AWS.
-AWS Fargate- Used with ECS to run container applications without having to manage servers.
-ECS (Elastic Container Service)- Used to easily deploy, manage, and scale docker containers.
-# Step1:
- we will configure an IAM role with the permission required in this project for AWS services. To create an IAM role
-# Policy List
-1. AmazonEC2ContainerRegistryPowerUser
-2. AWSCodeCommitReadOnly
-3. CloudWatchLogsFullAccess
-![image](https://github.com/Abrar-Akbar/aws-containerized-web-app-deployment/assets/62903208/0806398b-c59f-40a1-9271-5851628b1ded)
-   
-# Step2:
- We need to push our code to a repository for which code commit will be used. After creating the git repository, it provides different ways of connection such as HTTPS, SSH, and HTTPS(GRC). We will be using the HTTPS option to clone the repository so that we can push code to CodeCommit.
- 
-![image](https://github.com/Abrar-Akbar/aws-containerized-web-app-deployment/assets/62903208/9b8e9f77-d66e-4581-b83a-e03a710c7979)
+# AWS Containerized Web App Deployment
 
-In the local system where the web app code is available clone the repository and push the code.
-Code to create branch main- git checkout -b main
-Add files: - git add .
-Commit - git commit -m
-Push - git push origin main
-Content of Docker file used in this project.
-# Step3:
-Now, we will set up ECR. Visibility settings can be chosen between private and public. In this project, we will be using a private repository. A concise name that can be identified by the developer should be provided in the repository name.
+## Prerequisites
 
-![image](https://github.com/Abrar-Akbar/aws-containerized-web-app-deployment/assets/62903208/7c7756da-ceae-4460-93f8-6591fe4df61d)
+- **CodeCommit:** Version control service for storing code and documents.
+- **CodeBuild:** Compiles source code, runs unit tests, and produces artifacts (S3).
+- **CodePipeline:** Models and configures software release process stages for continuous deployment.
+- **IAM roles:** Provides access to AWS resources.
+- **ECR (Elastic Container Registry):** Stores and manages local Docker images on AWS.
+- **AWS Fargate:** Runs container applications without managing servers.
+- **ECS (Elastic Container Service):** Deploys, manages, and scales Docker containers.
 
-After creating a container repository, it can be shown listed in private along with its URI.
+## Step 1: Configure IAM Role
 
-# Step 4:
-Now, we will set up CodeBuild with the source as CodeCommit. CodeBuild will extract code from the CodeCommit repository that we created earlier. Reference type can be selected as a branch with a relevant name, in our case “main”.
+Create an IAM role with the necessary permissions for AWS services.
 
-We will be using the default environment configuration. CodeBuild also requires a computing medium, for which we will use EC2. We don’t need to configure EC2. To execute an operation of CodeBuild permission is required which is provided by the IAM role created earlier.
-buildspec.yml file will be used to build commands which will be provided through CodeCommit.
+- **Policy List:**
+  - AmazonEC2ContainerRegistryPowerUser
+  - AWSCodeCommitReadOnly
+  - CloudWatchLogsFullAccess
+
+## Step 2: CodeCommit Setup
+
+Push code to a CodeCommit repository.
+
+- Clone the repository to your local system.
+- Create a main branch and push code using the HTTPS option.
+
+## Step 3: Set Up ECR
+
+Configure a private repository in ECR.
+
+- Choose visibility settings (private).
+- Provide a concise repository name.
+- After creation, view the repository URI.
+
+## Step 4: CodeBuild Setup
+
+Set up CodeBuild with the source as CodeCommit.
+
+- Choose the main branch as the reference type.
+- Use default environment configuration.
+- Configure computing medium as EC2.
+- Use the IAM role created earlier for permissions.
+- Use `buildspec.yml` to automate building Docker images from source code.
+
+## Step 5: ECS Configuration
+
+Configure ECS to run the Docker container.
+
+- Create a cluster to organize container instances regionally.
+- Configure task definition using Fargate.
+- Specify container name and image URI.
+- Create services to manage instances of the task description concurrently.
+
+## Step 6: CodePipeline Setup
+
+Configure CodePipeline for automated deployment.
+
+- Provide a name for the pipeline.
+- Configure CodeCommit as the source.
+- Choose CodeBuild as the build provider.
+- Configure ECS as the deployment provider.
+- Release changes to trigger the deployment process.
+
+After completion, view the hosted web app in the ECS task section with a public IP address.
 
 
 
