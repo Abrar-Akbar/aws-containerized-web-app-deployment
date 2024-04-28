@@ -1,3 +1,4 @@
+# Buildspec file authored by Abrar Akbar
 version: 0.2
 phases:
   install:
@@ -8,23 +9,22 @@ phases:
       - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
   pre_build:
     commands:
-      - echo log in to Amazon ECR...
-      - <provide way to Retrieve an authentication token and authenticate your Docker client to your registry using push commands>
-      - REPOSITORY_URI=<replace with the uri of ECR>
-      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7
-      - IMAGE_TAG=${COMMIT_HASH:=latest}
+      - echo "Logging in to Amazon ECR..."
+      - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION) # Authenticate Docker with Amazon ECR
+      - export REPOSITORY_URI=<replace with the uri of ECR>
+      - export COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - export IMAGE_TAG=${COMMIT_HASH:-latest} # Corrected syntax for setting IMAGE_TAG
   build:
     commands:
-      - echo Build started on `date`
-      - echo Building the Docker image.
-      - docker build -t $REPOSITORY_URI:latest .
-      - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
+      - echo "Build started on $(date)"
+      - echo "Building the Docker image."
+      - docker build -t $REPOSITORY_URI:$IMAGE_TAG . # Tag with $IMAGE_TAG instead of latest
   post_build:
     commands:
-      - echo Build completed on `date`
+      - echo "Build completed on $(date)"
+      - docker push $REPOSITORY_URI:$IMAGE_TAG # Tag the image with $IMAGE_TAG
       - docker push $REPOSITORY_URI:latest
-      - docker push $REPOSITORY_URI:$IMAGE_TAG
-      - echo write definitions file...
-      -printf'[{"name":"blog-code-pipeline","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
+      - echo "Writing definitions file..."
+      - printf '[{"name":"blog-code-pipeline","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
 artifacts:
   files: imagedefinitions.json
